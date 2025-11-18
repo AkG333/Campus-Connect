@@ -9,7 +9,8 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchQuestions({ search: searchTerm });
-  }, [searchTerm, fetchQuestions]);
+  }, [searchTerm]);
+
 
   if (loading) {
     return (

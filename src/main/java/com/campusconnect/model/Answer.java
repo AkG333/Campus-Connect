@@ -32,7 +32,8 @@ public class Answer {
     @JsonIgnore
     private User user;  // answered by which user
 
-    private Integer upvotes = 0;
+
+    private int upvotes = 0;
 
     @CreationTimestamp
     @Column(name="created_at", nullable = false, updatable = false)

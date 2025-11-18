@@ -1,42 +1,35 @@
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
-  avatar?: string;
-  bio?: string;
-  joinedDate: string;
-  questionsCount: number;
-  answersCount: number;
-  reputation: number;
+  createdAt: string;
+  role?: string | null;
 }
 
 export interface Question {
-  id: string;
+  id: number;
   title: string;
-  content: string;
-  author: {
-    id: string;
-    name: string;
-    avatar?: string;
-  };
-  tags: string[];
-  votes: number;
-  answers: number;
-  views: number;
+  body: string;
+  userId: number;
+  authorName: string;
   createdAt: string;
-  updatedAt: string;
+  upvotes: number;
+  answerCount: number;
 }
 
 export interface Answer {
-  id: string;
-  content: string;
-  author: {
-    id: string;
-    name: string;
-    avatar?: string;
-  };
-  votes: number;
-  isAccepted: boolean;
+  id: number;
+  body: string;
+  userId: number;
+  authorName: string;
   createdAt: string;
-  updatedAt: string;
+  upvotes: number;
+}
+
+export interface QuestionPage {
+  content: Question[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
 }

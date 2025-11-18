@@ -1,100 +1,98 @@
-import axios from 'axios';
-import type { AxiosInstance } from 'axios';
-import type { Question } from '../types';
+import axios from "axios";
+import type { AxiosInstance, AxiosResponse } from "axios";
+import type { Question, QuestionPage } from "../types";
 
-const API_BASE_URL = 'http://localhost:8080/api'; // Update with your actual API base URL
+const API_BASE_URL = "http://localhost:8080/api";
 
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
-// Extend the AxiosInstance interface to include our custom methods
+// ----------------------
+// Correct API interface
+// ----------------------
 interface QuestionsAPI {
   getQuestions: (params?: {
     page?: number;
-    limit?: number;
+    size?: number;
     search?: string;
-    tag?: string;
-  }) => Promise<{ data: Question[] }>;
-  
-  getQuestion: (id: string) => Promise<{ data: Question }>;
-  
+  }) => Promise<AxiosResponse<QuestionPage>>;
+
+  getQuestion: (id: string) => Promise<AxiosResponse<Question>>;
+
   createQuestion: (questionData: {
     title: string;
-    content: string;
-  }) => Promise<{ data: Question }>;
-  
-  updateQuestion: (id: string, questionData: {
-    title?: string;
-    content?: string;
-  }) => Promise<{ data: Question }>;
-  
-  deleteQuestion: (id: string) => Promise<void>;
-  
-  voteQuestion: (id: string, vote: 'up' | 'down') => Promise<{ data: { votes: number } }>;
+    body: string; // frontend uses content
+  }) => Promise<AxiosResponse<Question>>;
+
+  voteQuestion: (id: string, vote: "up" | "down") => Promise<AxiosResponse<number>>;
+
+  updateQuestion: (id: string, data: any) => Promise<never>;
+  deleteQuestion: (id: string) => Promise<never>;
 }
 
-// Request interceptor to add auth token to requests
+// ----------------------
+// Attach token
+// ----------------------
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle common errors
+// ----------------------
+// Handle 401
+// ----------------------
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Handle unauthorized access (e.g., redirect to login)
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      localStorage.removeItem("token");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
 );
 
-// Create typed API client
+// ----------------------
+// Real API client
+// ----------------------
 const questionsAPI: QuestionsAPI = {
-  // Get all questions with optional pagination and filtering
   getQuestions: (params = {}) => {
-    return api.get<Question[]>('/questions/all', { params });
+    return api.get<QuestionPage>("/questions", { params });
   },
 
-  // Get a single question by ID
   getQuestion: (id) => {
     return api.get<Question>(`/questions/${id}`);
   },
 
-  // Create a new question
-  createQuestion: (questionData) => {
-    return api.post<Question>('/questions/ask', questionData);
+  createQuestion: ({ title, body}) => {
+    return api.post<Question>("/questions/ask", {
+      title,
+      body: body, // backend requires "body"
+    });
   },
 
-  // Update a question
-  updateQuestion: (id, questionData) => {
-    return api.put<Question>(`/questions/${id}`, questionData);
+  updateQuestion: async () => {
+    throw new Error("Update question API not implemented in backend");
   },
 
-  // Delete a question
-  deleteQuestion: (id) => {
-    return api.delete(`/questions/${id}`) as Promise<void>;
+  deleteQuestion: async () => {
+    throw new Error("Delete question API not implemented in backend");
   },
 
-  // Vote on a question
   voteQuestion: (id, vote) => {
-    return api.post<{ votes: number }>(`/questions/${id}/vote`, { vote });
-  }
+    const value = vote === "up" ? 1 : -1;
+    return api.post<number>(`/questions/${id}/vote?value=${value}`);
+  },
 };
 
 export { api, questionsAPI };
