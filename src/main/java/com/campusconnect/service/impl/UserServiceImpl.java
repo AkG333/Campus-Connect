@@ -5,13 +5,17 @@ import com.campusconnect.dto.UserDTO;
 import com.campusconnect.dto.AuthResponse;
 import com.campusconnect.dto.response.UserProfileDTO;
 import com.campusconnect.mapper.UserMapper;
+import com.campusconnect.model.Question;
 import com.campusconnect.model.User;
 import com.campusconnect.repository.UserRepository;
+import com.campusconnect.repository.QuestionRepository;
 import com.campusconnect.security.JwtUtil;
 import com.campusconnect.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,6 +29,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @Override
     public User registerUser(UserDTO dto) {
@@ -74,6 +80,9 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toProfileDTO(user);
     }
 
-
+    @Override
+    public List<Question> getQuestionsByUser(Long userId) {
+        return questionRepository.findByUserId(userId); // ← call instance method
+    }
 
 }

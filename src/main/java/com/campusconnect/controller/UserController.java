@@ -11,6 +11,8 @@ import com.campusconnect.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin
@@ -47,5 +49,12 @@ public class UserController {
         return UserMapper.toProfileDTO(updated);
     }
 
+    @GetMapping("/{id}/questions")
+    public List<QuestionResponseDTO> getUserQuestions(@PathVariable Long id) {
+        return userService.getQuestionsByUser(id)
+                .stream()
+                .map(QuestionMapper::toDTO)
+                .toList();
+    }
 
 }
