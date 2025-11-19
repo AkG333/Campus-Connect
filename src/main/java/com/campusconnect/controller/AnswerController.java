@@ -66,5 +66,19 @@ public class AnswerController {
         return result.map(AnswerMapper::toDTO);
     }
 
+    @PutMapping("/{id}/edit")
+    public AnswerResponseDTO editAnswer(@PathVariable Long id, @RequestBody AnswerDTO dto) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        Answer updated = answerService.editAnswer(id, userId, dto);
+        return AnswerMapper.toDTO(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteAnswer(@PathVariable Long id) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        answerService.deleteAnswer(id, userId);
+        return "Answer deleted successfully";
+    }
+
 
 }

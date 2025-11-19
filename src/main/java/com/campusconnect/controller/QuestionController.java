@@ -73,5 +73,19 @@ public class QuestionController {
         return result.map(QuestionMapper::toDTO);
     }
 
+    @PutMapping("/{id}/edit")
+    public QuestionResponseDTO editQuestion(@PathVariable Long id, @RequestBody QuestionDTO dto) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        Question q = questionService.editQuestion(id, userId, dto);
+        return QuestionMapper.toDTO(q);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteQuestion(@PathVariable Long id) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        questionService.deleteQuestion(id, userId);
+        return "Question deleted successfully";
+    }
+
 
 }

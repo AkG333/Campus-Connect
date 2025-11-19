@@ -18,4 +18,8 @@ public interface QuestionService {
 
     Page<Question> searchQuestions(String keyword, int page, int size, String sortBy);
 
+    Question editQuestion(Long id, Long userId, QuestionDTO dto);
+
+    void deleteQuestion(Long id, Long userId);
+
 }

@@ -13,6 +13,10 @@ public class QuestionMapper {
         dto.setUserId(q.getUser().getId());
         dto.setAuthorName(q.getUser().getName());
         dto.setCreatedAt(q.getCreatedAt().toString());
+
+        dto.setUpvotes(q.getUpvotes());                // ⭐ NEW
+        dto.setAnswerCount(q.getAnswers().size());     // ⭐ NEW
+
         return dto;
     }
 }

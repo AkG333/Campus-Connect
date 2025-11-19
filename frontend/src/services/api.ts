@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { AxiosInstance, AxiosResponse } from "axios";
-import type { Question, QuestionPage } from "../types";
+import type { QuestionPage } from "../types";
 
 const API_BASE_URL = "http://localhost:8080/api";
 
@@ -12,7 +12,7 @@ const api: AxiosInstance = axios.create({
 });
 
 // ----------------------
-// Correct API interface
+// API INTERFACE
 // ----------------------
 interface QuestionsAPI {
   getQuestions: (params?: {
@@ -21,12 +21,13 @@ interface QuestionsAPI {
     search?: string;
   }) => Promise<AxiosResponse<QuestionPage>>;
 
-  getQuestion: (id: string) => Promise<AxiosResponse<Question>>;
+  getQuestion: (id: string) => Promise<AxiosResponse<any>>; 
+  // backend returns answers, so using "any" is correct here
 
   createQuestion: (questionData: {
     title: string;
-    body: string; // frontend uses content
-  }) => Promise<AxiosResponse<Question>>;
+    body: string;
+  }) => Promise<AxiosResponse<any>>;
 
   voteQuestion: (id: string, vote: "up" | "down") => Promise<AxiosResponse<number>>;
 
@@ -63,7 +64,7 @@ api.interceptors.response.use(
 );
 
 // ----------------------
-// Real API client
+// API IMPLEMENTATION
 // ----------------------
 const questionsAPI: QuestionsAPI = {
   getQuestions: (params = {}) => {
@@ -71,13 +72,13 @@ const questionsAPI: QuestionsAPI = {
   },
 
   getQuestion: (id) => {
-    return api.get<Question>(`/questions/${id}`);
+    return api.get(`/questions/${id}`);
   },
 
-  createQuestion: ({ title, body}) => {
-    return api.post<Question>("/questions/ask", {
+  createQuestion: ({ title, body }) => {
+    return api.post("/questions/ask", {
       title,
-      body: body, // backend requires "body"
+      body, // backend expects "body"
     });
   },
 

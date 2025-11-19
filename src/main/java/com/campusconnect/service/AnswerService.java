@@ -16,4 +16,8 @@ public interface AnswerService {
 
     Page<Answer> getAnswers(Long questionId, int page, int size, String sortBy);
 
+    Answer editAnswer(Long id, Long userId, AnswerDTO dto);
+
+    void deleteAnswer(Long id, Long userId);
+
 }

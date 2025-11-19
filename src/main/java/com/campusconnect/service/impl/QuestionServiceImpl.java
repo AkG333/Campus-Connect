@@ -23,6 +23,8 @@ public class QuestionServiceImpl implements QuestionService {
     @Autowired
     private UserRepository userRepo;
 
+
+
     @Override
     public Question askQuestion(QuestionDTO dto) {
 
@@ -79,6 +81,32 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         return questionRepo.findByTitleContainingIgnoreCase(keyword, pageable);
+    }
+
+    @Override
+    public Question editQuestion(Long id, Long userId, QuestionDTO dto) {
+        Question q = questionRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Question not found"));
+
+        if (!q.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        q.setTitle(dto.getTitle());
+        q.setBody(dto.getBody());
+
+        return questionRepo.save(q);
+    }
+
+    @Override
+    public void deleteQuestion(Long id, Long userId) {
+        Question q = questionRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Question not found"));
+
+        if (!q.getUser().getId().equals(userId))
+            throw new RuntimeException("Unauthorized");
+
+        questionRepo.delete(q);
     }
 
 

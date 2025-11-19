@@ -15,8 +15,7 @@ public class AnswerVote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // +1 upvote, -1 downvote
-    private int voteValue;
+    private int voteValue;  // +1 or -1
 
     @ManyToOne
     @JoinColumn(name = "answer_id")

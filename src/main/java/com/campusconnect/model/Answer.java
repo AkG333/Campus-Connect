@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -32,8 +34,12 @@ public class Answer {
     @JsonIgnore
     private User user;  // answered by which user
 
-
     private int upvotes = 0;
+
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<AnswerVote> votes = new ArrayList<>();
+
 
     @CreationTimestamp
     @Column(name="created_at", nullable = false, updatable = false)

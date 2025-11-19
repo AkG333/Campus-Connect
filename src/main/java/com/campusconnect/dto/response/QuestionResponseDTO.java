@@ -10,4 +10,7 @@ public class QuestionResponseDTO {
     private Long userId;
     private String authorName;
     private String createdAt;
+    private int upvotes;
+    private int answerCount;
+
 }

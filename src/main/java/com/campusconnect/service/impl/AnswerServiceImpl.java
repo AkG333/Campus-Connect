@@ -76,4 +76,28 @@ public class AnswerServiceImpl implements AnswerService {
         return answerRepo.findByQuestionId(questionId, pageable);
     }
 
+    @Override
+    public Answer editAnswer(Long id, Long userId, AnswerDTO dto) {
+        Answer a = answerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Answer not found"));
+
+        if (!a.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        a.setBody(dto.getBody());
+        return answerRepo.save(a);
+    }
+
+    @Override
+    public void deleteAnswer(Long id, Long userId) {
+        Answer a = answerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Answer not found"));
+
+        if (!a.getUser().getId().equals(userId))
+            throw new RuntimeException("Unauthorized");
+
+        answerRepo.delete(a);
+    }
+
 }
